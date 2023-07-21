@@ -30,15 +30,13 @@ pub fn fft_forward(width: usize, height: usize, img_buffer: &mut [Complex<f64>])
 
     let fft_height = planner.plan_fft(height as usize, FftDirection::Forward);
     scratch.resize(fft_height.get_outofplace_scratch_len(), Complex::default());
-    
+
     for (tr_buf, col_buf) in transposed
         .chunks_exact_mut(height as usize)
-        .zip(img_buffer.chunks_exact_mut(height as usize))
-    {
-        fft_height.process_outofplace_with_scratch(tr_buf, col_buf, &mut scratch);
+        .zip(img_buffer.chunks_exact_mut(height as usize)){            
+            fft_height.process_outofplace_with_scratch(tr_buf, col_buf, &mut scratch);
     }    
 
-    println!("done");
 }
 
 fn read_image(file: String) -> image::GrayImage{

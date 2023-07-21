@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 rustfft ="6.1.0"
 image = "0.24.6"
+
+[dev-dependencies]
