@@ -2,16 +2,38 @@ use std::io::Cursor;
 use image::{io::Reader as ImageReader, DynamicImage};
 
 use rustfft::{FftPlanner, num_complex::Complex, FftDirection};
+use show_image::{ImageView, ImageInfo, create_window};
 
 
-fn main() {    
-    println!("Hello, world!");
+fn main() -> Result<(), Box<dyn std::error::Error>> {    
 
-    let image = read_image("img/kickme.jpg".into()); //mandrill.jpg
+    let args: Vec<_> = std::env::args().collect();
+    if args.len() < 1 {
+        println!("usage: freqshow <image_file_name>");
+    }
+    let image = read_image( args[1].clone()); //mandrill.jpg
 
     let (width , height) = image.dimensions();
     let mut img_buffer = dynimg2complex(image);
     fft_forward(width as usize, height as usize, &mut img_buffer);
+
+
+    // Convert the complex img_buffer back into a gray image.
+    let img_raw: Vec<u8> = img_buffer
+        .iter()
+        .map(|c| (c.norm().min(1.0) * 255.0) as u8)
+        .collect();
+
+    let out_img = image::GrayImage::from_raw(width, height, img_raw).unwrap();
+
+    out_img.save("img/fft.png");
+    
+
+    // Create a window with default options and display the image.
+//    let window = create_window("image", Default::default())?;
+//    window.set_image("FFT Lowpass filtered image (i think)", out_img).unwrap();
+    Ok(())
+
 
 }
 
