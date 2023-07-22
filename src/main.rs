@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let out_img = image::GrayImage::from_raw(width, height, img_raw).unwrap();
 
-    out_img.save("img/fft.png");
+    out_img.save(format!("output/fftlp-{}",args[0]));
     
 
     // Create a window with default options and display the image.
