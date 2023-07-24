@@ -2,7 +2,9 @@
 name = "freqshow"
 version = "0.1.0"
 edition = "2021"
-
+authors = [
+    "Sam Beskur <sam.beskur@gmail.com>",
+]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -11,3 +13,7 @@ image = "0.24.6"
 show-image = "0.13"
 
 [dev-dependencies]
+
+
+[[example]]
+name = "freq_out"

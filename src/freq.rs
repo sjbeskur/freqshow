@@ -63,12 +63,12 @@ pub fn fft_forward(width: usize, height: usize, img_buffer: &mut [Complex<f64>])
 
 }
 
-fn read_image(file: String) -> image::GrayImage{
+pub fn read_image(file: String) -> image::GrayImage{
     let img = image::open(file).unwrap().into_luma8();
     img
 }
 
-fn dynimg2complex(img: image::GrayImage ) -> Vec<Complex<f64>>{
+pub fn dynimg2complex(img: image::GrayImage ) -> Vec<Complex<f64>>{
     let (width, height) = img.dimensions();
 
     // Convert the image buffer to complex numbers to be able to compute the FFT.
