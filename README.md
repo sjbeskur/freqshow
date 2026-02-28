@@ -1,5 +1,10 @@
 # freqshow
 
+[![Crates.io](https://img.shields.io/crates/v/freqshow)](https://crates.io/crates/freqshow)
+[![docs.rs](https://img.shields.io/docsrs/freqshow)](https://docs.rs/freqshow)
+[![CI](https://github.com/sjbeskur/freqshow/actions/workflows/ci.yml/badge.svg)](https://github.com/sjbeskur/freqshow/actions/workflows/ci.yml)
+[![License](https://img.shields.io/crates/l/freqshow)](https://github.com/sjbeskur/freqshow#license)
+
 A Rust library for converting images to and from the 2D frequency domain via FFT.
 
 ## Usage
@@ -50,6 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 | `fi.view_fft_norm()` | Log-scale magnitude visualization |
 | `fi.low_pass_mask(cutoff, smoothing)` | Generate a low-pass filter mask |
 | `fi.high_pass_mask(cutoff, smoothing)` | Generate a high-pass filter mask |
+| `fi.band_pass_mask(low, high, smoothing)` | Generate a band-pass filter mask |
 | `fi.apply_filter(mask)` | Apply a filter mask in-place |
 
 ## Running the example
