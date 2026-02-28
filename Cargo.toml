@@ -1,6 +1,6 @@
 [package]
 name = "freqshow"
-version = "0.2.2"
+version = "0.3.0"
 edition = "2021"
 authors = ["Sam Beskur <sam.beskur@gmail.com>"]
 categories = ["computer-vision", "visualization"]
