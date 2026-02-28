@@ -125,6 +125,17 @@ mod tests {
     }
 
     #[test]
+    fn test_band_pass_mask_bounded_by_low_and_high() {
+        let fi = FreqImage { width: 64, height: 64, data: vec![Complex::default(); 64 * 64] };
+        let bp = fi.band_pass_mask(0.05, 0.15, 0.0);
+        let lp = fi.low_pass_mask(0.15, 0.0);
+        let hp = fi.high_pass_mask(0.05, 0.0);
+        for ((&b, &l), &h) in bp.iter().zip(lp.iter()).zip(hp.iter()) {
+            assert!((b - l * h).abs() < 1e-10, "band-pass != low*high: {b} vs {}", l * h);
+        }
+    }
+
+    #[test]
     fn test_view_fft_norm_produces_correct_size() {
         let mut fi = FreqImage::open("data/mandrill.jpg").unwrap();
         fi.fft_forward();
