@@ -51,27 +51,31 @@ impl FreqImage {
     }
 
     /// Perform a 2D forward FFT in-place.
+    ///
+    /// The buffer remains in row-major layout after this call.
     pub fn fft_forward(&mut self) {
         let (w, h) = (self.width as usize, self.height as usize);
         let mut planner = FftPlanner::new();
-        let fft_width = planner.plan_fft(w, FftDirection::Forward);
 
+        // Row-wise FFT.
+        let fft_width = planner.plan_fft(w, FftDirection::Forward);
         let mut scratch = vec![Complex::default(); fft_width.get_inplace_scratch_len()];
         for row in self.data.chunks_exact_mut(w) {
             fft_width.process_with_scratch(row, &mut scratch);
         }
 
+        // Transpose so columns become accessible as contiguous rows.
         let mut transposed = transpose(w, h, &self.data);
 
+        // Column-wise FFT (operating on transposed rows).
         let fft_height = planner.plan_fft(h, FftDirection::Forward);
-        scratch.resize(fft_height.get_outofplace_scratch_len(), Complex::default());
-
-        for (tr_buf, col_buf) in transposed
-            .chunks_exact_mut(h)
-            .zip(self.data.chunks_exact_mut(h))
-        {
-            fft_height.process_outofplace_with_scratch(tr_buf, col_buf, &mut scratch);
+        scratch.resize(fft_height.get_inplace_scratch_len(), Complex::default());
+        for col in transposed.chunks_exact_mut(h) {
+            fft_height.process_with_scratch(col, &mut scratch);
         }
+
+        // Transpose back to row-major so the buffer layout is always consistent.
+        self.data = transpose(h, w, &transposed);
     }
 
     /// Perform a 2D inverse FFT in-place, including normalization.
@@ -79,24 +83,24 @@ impl FreqImage {
         let (w, h) = (self.width as usize, self.height as usize);
         let mut planner = FftPlanner::new();
 
-        // Undo the column FFT first (height-wise IFFT, in-place).
+        // Transpose so columns are contiguous.
+        let mut transposed = transpose(w, h, &self.data);
+
+        // Column-wise IFFT.
         let fft_height = planner.plan_fft(h, FftDirection::Inverse);
         let mut scratch = vec![Complex::default(); fft_height.get_inplace_scratch_len()];
-        for col in self.data.chunks_exact_mut(h) {
+        for col in transposed.chunks_exact_mut(h) {
             fft_height.process_with_scratch(col, &mut scratch);
         }
 
-        // Transpose back from (width × height) to (height × width).
-        let mut transposed = transpose(h, w, &self.data);
+        // Transpose back to row-major.
+        self.data = transpose(h, w, &transposed);
 
-        // Undo the row FFT (width-wise IFFT, out-of-place into buffer).
+        // Row-wise IFFT.
         let fft_width = planner.plan_fft(w, FftDirection::Inverse);
-        scratch.resize(fft_width.get_outofplace_scratch_len(), Complex::default());
-        for (tr_buf, row_buf) in transposed
-            .chunks_exact_mut(w)
-            .zip(self.data.chunks_exact_mut(w))
-        {
-            fft_width.process_outofplace_with_scratch(tr_buf, row_buf, &mut scratch);
+        scratch.resize(fft_width.get_inplace_scratch_len(), Complex::default());
+        for row in self.data.chunks_exact_mut(w) {
+            fft_width.process_with_scratch(row, &mut scratch);
         }
 
         let norm = (w * h) as f64;
