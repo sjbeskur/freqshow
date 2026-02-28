@@ -2,8 +2,8 @@ mod fft;
 mod filter;
 mod shift;
 
-use std::path::Path;
 use rustfft::num_complex::Complex;
+use std::path::Path;
 
 /// A grayscale image represented as a complex buffer, suitable for FFT operations.
 ///
@@ -52,7 +52,11 @@ impl FreqImage {
             .iter()
             .map(|&pix| Complex::new(pix as f64 / 255.0, 0.0))
             .collect();
-        FreqImage { width, height, data }
+        FreqImage {
+            width,
+            height,
+            data,
+        }
     }
 
     /// Convert the complex buffer back to a grayscale image.
@@ -97,12 +101,17 @@ impl FreqImage {
         let max = log_norms.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
         let pixels: Vec<u8> = log_norms
             .into_iter()
-            .map(|x| if max > 0.0 { (x / max * 255.0) as u8 } else { 0 })
+            .map(|x| {
+                if max > 0.0 {
+                    (x / max * 255.0) as u8
+                } else {
+                    0
+                }
+            })
             .collect();
         image::GrayImage::from_raw(self.width, self.height, pixels).unwrap()
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -147,22 +156,37 @@ mod tests {
 
     #[test]
     fn test_low_high_pass_masks_sum_to_one() {
-        let fi = FreqImage { width: 64, height: 64, data: vec![Complex::default(); 64 * 64] };
+        let fi = FreqImage {
+            width: 64,
+            height: 64,
+            data: vec![Complex::default(); 64 * 64],
+        };
         let lp = fi.low_pass_mask(0.10, 0.02);
         let hp = fi.high_pass_mask(0.10, 0.02);
         for (l, h) in lp.iter().zip(hp.iter()) {
-            assert!((l + h - 1.0).abs() < 1e-10, "masks don't sum to 1: {l} + {h}");
+            assert!(
+                (l + h - 1.0).abs() < 1e-10,
+                "masks don't sum to 1: {l} + {h}"
+            );
         }
     }
 
     #[test]
     fn test_band_pass_mask_bounded_by_low_and_high() {
-        let fi = FreqImage { width: 64, height: 64, data: vec![Complex::default(); 64 * 64] };
+        let fi = FreqImage {
+            width: 64,
+            height: 64,
+            data: vec![Complex::default(); 64 * 64],
+        };
         let bp = fi.band_pass_mask(0.05, 0.15, 0.0);
         let lp = fi.low_pass_mask(0.15, 0.0);
         let hp = fi.high_pass_mask(0.05, 0.0);
         for ((&b, &l), &h) in bp.iter().zip(lp.iter()).zip(hp.iter()) {
-            assert!((b - l * h).abs() < 1e-10, "band-pass != low*high: {b} vs {}", l * h);
+            assert!(
+                (b - l * h).abs() < 1e-10,
+                "band-pass != low*high: {b} vs {}",
+                l * h
+            );
         }
     }
 

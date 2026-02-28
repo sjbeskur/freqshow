@@ -1,5 +1,5 @@
-use rustfft::num_complex::Complex;
 use super::FreqImage;
+use rustfft::num_complex::Complex;
 
 impl FreqImage {
     /// Shift the DC component to the center of the spectrum (like MATLAB's `fftshift`).
@@ -18,7 +18,11 @@ impl FreqImage {
     pub fn fftshift(&self) -> Self {
         let (w, h) = (self.width as usize, self.height as usize);
         let data = quadrant_shift(w, h, &self.data, w / 2, h / 2);
-        FreqImage { width: self.width, height: self.height, data }
+        FreqImage {
+            width: self.width,
+            height: self.height,
+            data,
+        }
     }
 
     /// Shift the DC component back to the corners (inverse of `fftshift`).
@@ -29,7 +33,11 @@ impl FreqImage {
     pub fn ifftshift(&self) -> Self {
         let (w, h) = (self.width as usize, self.height as usize);
         let data = quadrant_shift(w, h, &self.data, w.div_ceil(2), h.div_ceil(2));
-        FreqImage { width: self.width, height: self.height, data }
+        FreqImage {
+            width: self.width,
+            height: self.height,
+            data,
+        }
     }
 }
 
