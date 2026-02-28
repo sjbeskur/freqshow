@@ -8,6 +8,18 @@ use rustfft::num_complex::Complex;
 /// A grayscale image represented as a complex buffer, suitable for FFT operations.
 ///
 /// Carries `width`, `height`, and `data` together so dimensions never get out of sync.
+///
+/// # Example
+///
+/// ```
+/// use freqshow::{FreqImage, Complex};
+///
+/// let data = vec![Complex::new(0.5, 0.0); 8 * 8];
+/// let mut fi = FreqImage { width: 8, height: 8, data };
+/// fi.fft_forward();
+/// fi.fft_inverse();
+/// assert!((fi.data[0].re - 0.5).abs() < 1e-10);
+/// ```
 #[derive(Clone, Debug)]
 pub struct FreqImage {
     /// Image width in pixels.
@@ -47,6 +59,16 @@ impl FreqImage {
     ///
     /// Takes the real component of each value, clamps to `[0.0, 1.0]`,
     /// and scales to `[0, 255]`.
+    ///
+    /// ```
+    /// use freqshow::{FreqImage, Complex};
+    ///
+    /// let data = vec![Complex::new(0.5, 0.0); 4];
+    /// let fi = FreqImage { width: 2, height: 2, data };
+    /// let img = fi.to_image();
+    /// assert_eq!(img.dimensions(), (2, 2));
+    /// assert_eq!(img.as_raw()[0], 127); // 0.5 * 255 ≈ 127
+    /// ```
     #[must_use]
     pub fn to_image(&self) -> image::GrayImage {
         let pixels: Vec<u8> = self
@@ -60,6 +82,15 @@ impl FreqImage {
     /// Render the magnitude of the buffer as a grayscale image using a log scale.
     ///
     /// Applies `ln(1 + |c|)` per pixel and normalizes to `[0, 255]`.
+    ///
+    /// ```
+    /// use freqshow::{FreqImage, Complex};
+    ///
+    /// let data = vec![Complex::new(1.0, 0.0); 4];
+    /// let fi = FreqImage { width: 2, height: 2, data };
+    /// let vis = fi.view_fft_norm();
+    /// assert_eq!(vis.dimensions(), (2, 2));
+    /// ```
     #[must_use]
     pub fn view_fft_norm(&self) -> image::GrayImage {
         let log_norms: Vec<f64> = self.data.iter().map(|c| (1.0 + c.norm()).ln()).collect();

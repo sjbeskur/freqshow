@@ -3,6 +3,17 @@ use super::FreqImage;
 
 impl FreqImage {
     /// Shift the DC component to the center of the spectrum (like MATLAB's `fftshift`).
+    ///
+    /// ```
+    /// use freqshow::{FreqImage, Complex};
+    ///
+    /// let mut data = vec![Complex::default(); 4];
+    /// data[0] = Complex::new(1.0, 0.0); // DC at top-left
+    /// let fi = FreqImage { width: 2, height: 2, data };
+    /// let shifted = fi.fftshift();
+    /// // DC moves to center (bottom-right for 2x2).
+    /// assert_eq!(shifted.data[3].re, 1.0);
+    /// ```
     #[must_use]
     pub fn fftshift(&self) -> Self {
         let (w, h) = (self.width as usize, self.height as usize);

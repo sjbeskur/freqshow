@@ -6,6 +6,16 @@ impl FreqImage {
     /// `cutoff` and `smoothing` are fractions of `sqrt(width² + height²)`.
     /// Frequencies within `cutoff - smoothing/2` pass; beyond `cutoff + smoothing/2`
     /// are blocked. Use `smoothing = 0.0` for a hard cutoff.
+    ///
+    /// ```
+    /// use freqshow::{FreqImage, Complex};
+    ///
+    /// let fi = FreqImage { width: 64, height: 64, data: vec![Complex::default(); 64 * 64] };
+    /// let mask = fi.low_pass_mask(0.1, 0.0);
+    /// assert_eq!(mask.len(), 64 * 64);
+    /// // Center pixel (DC) should pass through.
+    /// assert_eq!(mask[32 * 64 + 32], 1.0);
+    /// ```
     #[must_use]
     pub fn low_pass_mask(&self, cutoff: f64, smoothing: f64) -> Vec<f64> {
         make_radial_mask(self.width as usize, self.height as usize, cutoff, smoothing)
@@ -34,6 +44,15 @@ impl FreqImage {
     /// # Panics
     ///
     /// Panics if `low_cutoff >= high_cutoff`.
+    ///
+    /// ```
+    /// use freqshow::{FreqImage, Complex};
+    ///
+    /// let fi = FreqImage { width: 64, height: 64, data: vec![Complex::default(); 64 * 64] };
+    /// let bp = fi.band_pass_mask(0.05, 0.15, 0.0);
+    /// // DC component (center) is blocked by the high-pass portion.
+    /// assert_eq!(bp[32 * 64 + 32], 0.0);
+    /// ```
     #[must_use]
     pub fn band_pass_mask(&self, low_cutoff: f64, high_cutoff: f64, smoothing: f64) -> Vec<f64> {
         assert!(
@@ -50,6 +69,16 @@ impl FreqImage {
     /// # Panics
     ///
     /// Panics if `mask.len()` does not equal `width * height`.
+    ///
+    /// ```
+    /// use freqshow::{FreqImage, Complex};
+    ///
+    /// let data = vec![Complex::new(1.0, 0.0); 4];
+    /// let mut fi = FreqImage { width: 2, height: 2, data };
+    /// fi.apply_filter(&[0.5, 0.5, 1.0, 1.0]);
+    /// assert_eq!(fi.data[0].re, 0.5);
+    /// assert_eq!(fi.data[2].re, 1.0);
+    /// ```
     pub fn apply_filter(&mut self, mask: &[f64]) {
         assert_eq!(
             mask.len(),
