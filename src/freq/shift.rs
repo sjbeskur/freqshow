@@ -3,6 +3,7 @@ use super::FreqImage;
 
 impl FreqImage {
     /// Shift the DC component to the center of the spectrum (like MATLAB's `fftshift`).
+    #[must_use]
     pub fn fftshift(&self) -> Self {
         let (w, h) = (self.width as usize, self.height as usize);
         let data = quadrant_shift(w, h, &self.data, w / 2, h / 2);
@@ -13,6 +14,7 @@ impl FreqImage {
     ///
     /// For even dimensions this is identical to `fftshift`. For odd dimensions
     /// this correctly shifts by `ceil(N/2)`.
+    #[must_use]
     pub fn ifftshift(&self) -> Self {
         let (w, h) = (self.width as usize, self.height as usize);
         let data = quadrant_shift(w, h, &self.data, w.div_ceil(2), h.div_ceil(2));

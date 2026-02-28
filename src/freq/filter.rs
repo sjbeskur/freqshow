@@ -6,6 +6,7 @@ impl FreqImage {
     /// `cutoff` and `smoothing` are fractions of `sqrt(width² + height²)`.
     /// Frequencies within `cutoff - smoothing/2` pass; beyond `cutoff + smoothing/2`
     /// are blocked. Use `smoothing = 0.0` for a hard cutoff.
+    #[must_use]
     pub fn low_pass_mask(&self, cutoff: f64, smoothing: f64) -> Vec<f64> {
         make_radial_mask(self.width as usize, self.height as usize, cutoff, smoothing)
     }
@@ -15,6 +16,7 @@ impl FreqImage {
     /// `cutoff` and `smoothing` are fractions of `sqrt(width² + height²)`.
     /// Frequencies beyond `cutoff + smoothing/2` pass; within `cutoff - smoothing/2`
     /// are blocked. Use `smoothing = 0.0` for a hard cutoff.
+    #[must_use]
     pub fn high_pass_mask(&self, cutoff: f64, smoothing: f64) -> Vec<f64> {
         make_radial_mask(self.width as usize, self.height as usize, cutoff, smoothing)
             .into_iter()
@@ -22,8 +24,42 @@ impl FreqImage {
             .collect()
     }
 
+    /// Generate a band-pass filter mask, for use on `fftshift`'d data.
+    ///
+    /// Passes frequencies between `low_cutoff` and `high_cutoff` (fractions of
+    /// `sqrt(width² + height²)`). `smoothing` controls the transition width at
+    /// both edges. Equivalent to element-wise multiplication of a low-pass mask
+    /// at `high_cutoff` and a high-pass mask at `low_cutoff`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `low_cutoff >= high_cutoff`.
+    #[must_use]
+    pub fn band_pass_mask(&self, low_cutoff: f64, high_cutoff: f64, smoothing: f64) -> Vec<f64> {
+        assert!(
+            low_cutoff < high_cutoff,
+            "low_cutoff ({low_cutoff}) must be less than high_cutoff ({high_cutoff})"
+        );
+        let lp = self.low_pass_mask(high_cutoff, smoothing);
+        let hp = self.high_pass_mask(low_cutoff, smoothing);
+        lp.into_iter().zip(hp).map(|(l, h)| l * h).collect()
+    }
+
     /// Apply a filter mask in-place (element-wise multiplication).
+    ///
+    /// # Panics
+    ///
+    /// Panics if `mask.len()` does not equal `width * height`.
     pub fn apply_filter(&mut self, mask: &[f64]) {
+        assert_eq!(
+            mask.len(),
+            self.data.len(),
+            "mask length ({}) must equal image size ({}x{} = {})",
+            mask.len(),
+            self.width,
+            self.height,
+            self.data.len(),
+        );
         for (c, &m) in self.data.iter_mut().zip(mask.iter()) {
             *c *= m;
         }

@@ -31,6 +31,7 @@ impl FreqImage {
     ///
     /// Color images are automatically converted to grayscale (luma8).
     /// Each pixel `[0, 255]` maps to a real component in `[0.0, 1.0]`.
+    #[must_use]
     pub fn from_image(img: image::DynamicImage) -> Self {
         let gray = img.into_luma8();
         let (width, height) = gray.dimensions();
@@ -46,6 +47,7 @@ impl FreqImage {
     ///
     /// Takes the real component of each value, clamps to `[0.0, 1.0]`,
     /// and scales to `[0, 255]`.
+    #[must_use]
     pub fn to_image(&self) -> image::GrayImage {
         let pixels: Vec<u8> = self
             .data
@@ -58,6 +60,7 @@ impl FreqImage {
     /// Render the magnitude of the buffer as a grayscale image using a log scale.
     ///
     /// Applies `ln(1 + |c|)` per pixel and normalizes to `[0, 255]`.
+    #[must_use]
     pub fn view_fft_norm(&self) -> image::GrayImage {
         let log_norms: Vec<f64> = self.data.iter().map(|c| (1.0 + c.norm()).ln()).collect();
         let max = log_norms.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
