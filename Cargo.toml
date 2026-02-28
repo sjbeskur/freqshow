@@ -1,7 +1,7 @@
 [package]
 name = "freqshow"
 version = "0.3.0"
-edition = "2021"
+edition = "2024"
 authors = ["Sam Beskur <sam.beskur@gmail.com>"]
 categories = ["computer-vision", "visualization"]
 description = "A simple tool to visualize the frequency spectrum of an image using Rust."
