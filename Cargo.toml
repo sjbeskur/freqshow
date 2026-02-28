@@ -5,7 +5,20 @@ edition = "2021"
 authors = [
     "Sam Beskur <sam.beskur@gmail.com>",
 ]
+
+categories = ["computer-vision", "fft", "image", "visualization"]
+description = "A simple tool to visualize the frequency spectrum of an image using Rust."
+documentation = "https://github.com/sjbeskur/freqshow/"
+homepage = "https://github.com/sjbeskur/freqshow/"
+keywords = ["fft", "cli", "image-processing", "visualization", "rust"]
+license = "Apache-2.0 OR MIT"
+readme = "README.md"
+repository = "https://github.com/sjbeskur/freqshow/"
+
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+exclude = ["target", "examples/freq_out.rs"]
 
 [dependencies]
 rustfft ="6.1.0"
