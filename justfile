@@ -27,7 +27,7 @@ check:
     cargo check
 
 # Run the example with an image file
-example file="img/mandrill.jpg":
+example file="data/mandrill.jpg":
     cargo run --example freq_out -- {{file}}
 
 # Build, lint, and test

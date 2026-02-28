@@ -239,7 +239,7 @@ mod tests {
 
     #[test]
     fn test_roundtrip() {
-        for file in &["img/sjb-aerial.png", "img/mandrill.jpg"] {
+        for file in &["data/sjb-aerial.png", "data/mandrill.jpg"] {
             let original = image::open(file).unwrap().into_luma8();
             let original_pixels = original.as_raw().clone();
 
@@ -256,7 +256,7 @@ mod tests {
 
     #[test]
     fn test_fftshift_double_shift_is_identity() {
-        let fi = FreqImage::open("img/mandrill.jpg").unwrap();
+        let fi = FreqImage::open("data/mandrill.jpg").unwrap();
         let shifted = fi.fftshift();
         let restored = shifted.fftshift();
         for (a, b) in fi.data.iter().zip(restored.data.iter()) {
@@ -266,7 +266,7 @@ mod tests {
 
     #[test]
     fn test_ifftshift_inverts_fftshift() {
-        let fi = FreqImage::open("img/mandrill.jpg").unwrap();
+        let fi = FreqImage::open("data/mandrill.jpg").unwrap();
         let shifted = fi.fftshift();
         let restored = shifted.ifftshift();
         for (a, b) in fi.data.iter().zip(restored.data.iter()) {
@@ -286,7 +286,7 @@ mod tests {
 
     #[test]
     fn test_view_fft_norm_produces_correct_size() {
-        let mut fi = FreqImage::open("img/mandrill.jpg").unwrap();
+        let mut fi = FreqImage::open("data/mandrill.jpg").unwrap();
         fi.fft_forward();
         let vis = fi.view_fft_norm();
         assert_eq!(vis.dimensions(), (fi.width, fi.height));

@@ -55,7 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ## Running the example
 
 ```bash
-cargo run --example freq_out -- img/mandrill.jpg
+cargo run --example freq_out -- data/mandrill.jpg
 ```
 
 This produces `spectrum.png`, `low_pass.png`, and `high_pass.png` in the working directory.
