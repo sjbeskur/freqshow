@@ -2,11 +2,8 @@
 name = "freqshow"
 version = "0.1.0"
 edition = "2021"
-authors = [
-    "Sam Beskur <sam.beskur@gmail.com>",
-]
-
-categories = ["computer-vision", "fft", "image", "visualization"]
+authors = ["Sam Beskur <sam.beskur@gmail.com>"]
+categories = ["computer-vision", "visualization"]
 description = "A simple tool to visualize the frequency spectrum of an image using Rust."
 documentation = "https://github.com/sjbeskur/freqshow/"
 homepage = "https://github.com/sjbeskur/freqshow/"
