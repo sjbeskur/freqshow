@@ -15,14 +15,14 @@ repository = "https://github.com/sjbeskur/freqshow/"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-exclude = ["target", "examples/freq_out.rs"]
+exclude = ["target", "examples/freq_out.rs", "notebooks"]
 
 [dependencies]
 rustfft ="6.1.0"
-image = "0.24.6"
+image = "0.25.9"
 
 [dev-dependencies]
-show-image = "0.13"
+show-image = "0.14"
 
 
 [[example]]
