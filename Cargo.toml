@@ -15,7 +15,7 @@ repository = "https://github.com/sjbeskur/freqshow/"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-exclude = ["target", "examples/freq_out.rs", "notebooks"]
+exclude = ["target", "notebooks", "data", "output", "benches"]
 
 [dependencies]
 rustfft ="6.1.0"
