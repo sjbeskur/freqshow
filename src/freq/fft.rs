@@ -1,5 +1,5 @@
 use super::FreqImage;
-use rustfft::{num_complex::Complex, FftDirection, FftPlanner};
+use rustfft::{FftDirection, FftPlanner, num_complex::Complex};
 
 impl FreqImage {
     /// Perform a 2D forward FFT in-place.

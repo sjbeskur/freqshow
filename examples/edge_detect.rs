@@ -2,8 +2,8 @@
 //!
 //! Usage: cargo run --example edge_detect -- data/mandrill.jpg
 
-use std::fs;
 use freqshow::FreqImage;
+use std::fs;
 
 const OUTPUT_DIR: &str = "output";
 

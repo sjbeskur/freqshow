@@ -5,8 +5,8 @@
 //!
 //! Usage: cargo run --example denoise -- data/mandrill.jpg
 
-use std::fs;
 use freqshow::FreqImage;
+use std::fs;
 
 const OUTPUT_DIR: &str = "output";
 
@@ -30,12 +30,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     centered.apply_filter(&mask);
 
     // Save the filtered spectrum for comparison.
-    centered.view_fft_norm().save(format!("{OUTPUT_DIR}/denoised_spectrum.png"))?;
+    centered
+        .view_fft_norm()
+        .save(format!("{OUTPUT_DIR}/denoised_spectrum.png"))?;
     println!("Wrote {OUTPUT_DIR}/denoised_spectrum.png");
 
     let mut result = centered.ifftshift();
     result.fft_inverse();
-    result.to_image().save(format!("{OUTPUT_DIR}/denoised.png"))?;
+    result
+        .to_image()
+        .save(format!("{OUTPUT_DIR}/denoised.png"))?;
     println!("Wrote {OUTPUT_DIR}/denoised.png");
 
     Ok(())

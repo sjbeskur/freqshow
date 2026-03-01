@@ -1,5 +1,5 @@
-use std::fs;
 use freqshow::FreqImage;
+use std::fs;
 
 const OUTPUT_DIR: &str = "output";
 
@@ -17,7 +17,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Visualize the centered spectrum.
     let centered = fi.fftshift();
-    centered.view_fft_norm().save(format!("{OUTPUT_DIR}/spectrum.png"))?;
+    centered
+        .view_fft_norm()
+        .save(format!("{OUTPUT_DIR}/spectrum.png"))?;
     println!("Wrote {OUTPUT_DIR}/spectrum.png");
 
     // Low-pass filter: keep the central 10% of the diagonal, 2% smooth transition.

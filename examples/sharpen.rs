@@ -6,8 +6,8 @@
 //!
 //! Usage: cargo run --example sharpen -- data/mandrill.jpg
 
-use std::fs;
 use freqshow::{Complex, FreqImage};
+use std::fs;
 
 const OUTPUT_DIR: &str = "output";
 
@@ -43,7 +43,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         *c = Complex::new(c.re.clamp(0.0, 1.0), 0.0);
     }
 
-    result.to_image().save(format!("{OUTPUT_DIR}/sharpened.png"))?;
+    result
+        .to_image()
+        .save(format!("{OUTPUT_DIR}/sharpened.png"))?;
     println!("Wrote {OUTPUT_DIR}/sharpened.png (strength={strength})");
 
     Ok(())
