@@ -3,7 +3,6 @@
 [![Crates.io](https://img.shields.io/crates/v/freqshow)](https://crates.io/crates/freqshow)
 [![docs.rs](https://img.shields.io/docsrs/freqshow)](https://docs.rs/freqshow)
 [![CI](https://github.com/sjbeskur/freqshow/actions/workflows/ci.yml/badge.svg)](https://github.com/sjbeskur/freqshow/actions/workflows/ci.yml)
-[![Benchmark](https://github.com/sjbeskur/freqshow/actions/workflows/ci.yml/badge.svg?event=push)](https://sjbeskur.github.io/freqshow/dev/bench/)
 [![License](https://img.shields.io/crates/l/freqshow)](https://github.com/sjbeskur/freqshow#license)
 
 A Rust library for converting images to and from the 2D frequency domain via FFT.
