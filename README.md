@@ -7,13 +7,17 @@
 
 A Rust library for converting images to and from the 2D frequency domain via FFT.
 
+| Original | Spectrum | Edge Detection |
+|----------|----------|----------------|
+| ![Lena](docs/images/lena.jpg) | ![Spectrum](docs/images/lena_spectrum.png) | ![Edges](docs/images/lena_edges.png) |
+
 ## Usage
 
 Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-freqshow = "0.1.0"
+freqshow = "0.3"
 ```
 
 ### Example
@@ -58,13 +62,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 | `fi.band_pass_mask(low, high, smoothing)` | Generate a band-pass filter mask |
 | `fi.apply_filter(mask)` | Apply a filter mask in-place |
 
-## Running the example
+## Examples
 
 ```bash
-cargo run --example freq_out -- data/mandrill.jpg
+cargo run --example freq_out -- data/mandrill.jpg      # spectrum, low/high-pass
+cargo run --example edge_detect -- data/mandrill.jpg   # edge detection
+cargo run --example sharpen -- data/mandrill.jpg       # sharpening
+cargo run --example denoise -- data/mandrill.jpg       # denoising
 ```
 
-This produces `spectrum.png`, `low_pass.png`, and `high_pass.png` in the working directory.
+All output is written to the `output/` directory.
 
 ## License
 
